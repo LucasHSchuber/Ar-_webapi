@@ -187,7 +187,7 @@ namespace Aråstock.Controllers
             if (existingItem != null)
             {
                 // If an item with the same itemName already exists, return a conflict response
-                return Conflict("Det finns redan en vara med det namet");
+                return Conflict("Det finns redan en vara i köket med det namet");
             }
 
 

@@ -24,7 +24,11 @@ namespace Aråstock.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Information>>> GetInformation()
         {
-            return await _context.Information.ToListAsync();
+            var information = await _context.Information
+                .OrderByDescending(i => i.Created)
+                .ToListAsync(); // Use ToListAsync to execute the query asynchronously
+
+            return Ok(information); // Wrap the result in an Ok ActionResult
         }
 
         // GET: api/Information/5
@@ -40,6 +44,8 @@ namespace Aråstock.Controllers
 
             return information;
         }
+
+
 
         // PUT: api/Information/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -72,16 +78,23 @@ namespace Aråstock.Controllers
             return NoContent();
         }
 
+
+
+
         // POST: api/Information
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Information>> PostInformation(Information information)
         {
+            information.Created = DateTime.Now;
             _context.Information.Add(information);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetInformation", new { id = information.Id }, information);
         }
+
+
+
 
         // DELETE: api/Information/5
         [HttpDelete("{id}")]

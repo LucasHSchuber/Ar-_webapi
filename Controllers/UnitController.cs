@@ -51,7 +51,13 @@ namespace Aråstock.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(unit).State = EntityState.Modified;
+            var existingUnit = await _context.Unit.FindAsync(id);
+            if (existingUnit == null){
+                return NotFound();
+            }
+
+            existingUnit.UnitName = unit.UnitName;
+            // _context.Entry(unit).State = EntityState.Modified;
 
             try
             {
@@ -72,16 +78,28 @@ namespace Aråstock.Controllers
             return NoContent();
         }
 
+
+
         // POST: api/Unit
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Unit>> PostUnit(Unit unit)
         {
+
+            var existingUnit = _context.Unit.FirstOrDefault(i => i.UnitName.ToLower() == unit.UnitName.ToLower());
+
+            if (existingUnit != null)
+            {
+                return Conflict("Det finns redan en enhet med det namet");
+            }
+
             _context.Unit.Add(unit);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetUnit", new { id = unit.UnitID }, unit);
         }
+
+
 
         // DELETE: api/Unit/5
         [HttpDelete("{id}")]
@@ -93,7 +111,14 @@ namespace Aråstock.Controllers
                 return NotFound();
             }
 
+
+            var deletedUnits = await _context.Item
+                .Where(r => r.UnitID == id)
+                .ToListAsync();
+
+            _context.Item.RemoveRange(deletedUnits);
             _context.Unit.Remove(unit);
+
             await _context.SaveChangesAsync();
 
             return NoContent();

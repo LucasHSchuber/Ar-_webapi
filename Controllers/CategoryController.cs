@@ -20,12 +20,16 @@ namespace Aråstock.Controllers
             _context = context;
         }
 
+
+
         // GET: api/Category
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategory()
         {
             return await _context.Category.ToListAsync();
         }
+
+
 
         // GET: api/Category/5
         [HttpGet("{id}")]
@@ -41,17 +45,27 @@ namespace Aråstock.Controllers
             return category;
         }
 
+
+
         // PUT: api/Category/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, Category category)
+        public async Task<IActionResult> PutCategory(int id, [FromBody] Category category)
         {
             if (id != category.CategoryID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(category).State = EntityState.Modified;
+            var existingCategory = await _context.Category.FindAsync(id);
+            if (existingCategory == null)
+            {
+                return NotFound();
+            }
+
+            existingCategory.CategoryName = category.CategoryName; // Update the CategoryName
+
+            // _context.Entry(category).State = EntityState.Modified;
 
             try
             {
@@ -72,16 +86,28 @@ namespace Aråstock.Controllers
             return NoContent();
         }
 
+
+
         // POST: api/Category
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
+
+            var existingCategory = _context.Category.FirstOrDefault(i => i.CategoryName.ToLower() == category.CategoryName.ToLower());
+
+            if (existingCategory != null)
+            {
+                return Conflict("Det finns redan en kategori med det namet");
+            }
+
             _context.Category.Add(category);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetCategory", new { id = category.CategoryID }, category);
         }
+
+
 
         // DELETE: api/Category/5
         [HttpDelete("{id}")]
@@ -93,11 +119,19 @@ namespace Aråstock.Controllers
                 return NotFound();
             }
 
+            var itemsToDelete = await _context.Item
+                .Where(r => r.CategoryID == id)
+                .ToListAsync();
+
+            // Remove the items
+            _context.Item.RemoveRange(itemsToDelete);
             _context.Category.Remove(category);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
+
+
 
         private bool CategoryExists(int id)
         {

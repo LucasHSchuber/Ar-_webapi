@@ -14,6 +14,8 @@ namespace Aråstock.Models
         public string Title { get; set; }
         [Required]
         public string Description { get; set; }
-        //  public string Writer { get; set; }
+        [Required]
+        public string Writer { get; set; }
+        public DateTime Created { get; set; }
     }
 }

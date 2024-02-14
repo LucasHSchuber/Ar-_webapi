@@ -25,6 +25,22 @@ namespace Aråstock.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Information",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false),
+                    Writer = table.Column<string>(type: "TEXT", nullable: false),
+                    Created = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Information", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Unit",
                 columns: table => new
                 {
@@ -47,6 +63,7 @@ namespace Aråstock.Migrations
                     CategoryID = table.Column<int>(type: "INTEGER", nullable: false),
                     Quantity = table.Column<int>(type: "INTEGER", nullable: false),
                     UnitID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Amount = table.Column<int>(type: "INTEGER", nullable: false),
                     Created = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -80,6 +97,9 @@ namespace Aråstock.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Information");
+
             migrationBuilder.DropTable(
                 name: "Item");
 
