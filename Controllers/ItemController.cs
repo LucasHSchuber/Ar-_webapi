@@ -91,20 +91,21 @@ namespace Aråstock.Controllers
         {
 
             return await _context.Item
-                .Where(item => item.ItemName.ToLower().Contains(searchString.ToLower()))
+                .Where(item => item.ItemName.ToLower().Contains(searchString.ToLower()) ||
+                    item.Category.CategoryName.ToLower().Contains(searchString.ToLower()))
                 .Select(item => new ItemDto
-                {
-                    ItemID = item.ItemID,
-                    ItemName = item.ItemName,
-                    CategoryID = item.CategoryID,
-                    CategoryName = item.Category.CategoryName,
-                    Quantity = item.Quantity,
-                    Amount = item.Amount,
-                    TotalAmountInStock = item.TotalAmountInStock,
-                    UnitID = item.UnitID,
-                    UnitName = item.Unit.UnitName,
-                    Created = item.Created
-                })
+                 {
+                     ItemID = item.ItemID,
+                     ItemName = item.ItemName,
+                     CategoryID = item.CategoryID,
+                     CategoryName = item.Category.CategoryName,
+                     Quantity = item.Quantity,
+                     Amount = item.Amount,
+                     TotalAmountInStock = item.TotalAmountInStock,
+                     UnitID = item.UnitID,
+                     UnitName = item.Unit.UnitName,
+                     Created = item.Created
+                 })
                 .ToListAsync();
         }
 
