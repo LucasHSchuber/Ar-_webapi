@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Aråstock.Models;
 
+
 public class StockDbContext : DbContext
 {
     public StockDbContext(DbContextOptions<StockDbContext> options)

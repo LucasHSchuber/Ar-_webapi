@@ -4,9 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Aråstock.Models;
 using Aråstock.DTOs;
+using Microsoft.EntityFrameworkCore;
+
 
 
 namespace Aråstock.Controllers
@@ -90,7 +91,7 @@ namespace Aråstock.Controllers
         public async Task<ActionResult<IEnumerable<ItemDto>>> GetItemSearch(string searchString)
         {
 
-            return await _context.Item
+            return await _context.Item?
                 .Where(item => item.ItemName.ToLower().Contains(searchString.ToLower()) ||
                     item.Category.CategoryName.ToLower().Contains(searchString.ToLower()))
                 .Select(item => new ItemDto
